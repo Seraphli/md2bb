@@ -1,4 +1,5 @@
 import mistune
+import argparse
 
 
 class BBRender(mistune.Renderer):
@@ -60,10 +61,28 @@ class BBRender(mistune.Renderer):
         return '[url=%s]%s[/url]' % (link, text)
 
 
-text = open('example.md').read()
-# renderer = mistune.Renderer(escape=True, hard_wrap=True)
-renderer = BBRender(escape=True, hard_wrap=True)
-# use this renderer instance
-markdown = mistune.Markdown(renderer=renderer)
-with open('example.bb', 'w') as f:
-    f.write(markdown(text))
+def convert(src, dst):
+    text = open(src).read()
+    renderer = BBRender(escape=True, hard_wrap=True)
+    # use this renderer instance
+    markdown = mistune.Markdown(renderer=renderer)
+    with open(dst, 'w') as f:
+        f.write(markdown(text))
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--src', default='example.md', metavar='example.md',
+                        type=str, help='input mardown file')
+    parser.add_argument('--dst', default='example.bb', metavar='example.bb',
+                        type=str, help='output file')
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    convert(args.src, args.dst)
+
+
+if __name__ == '__main__':
+    main()
